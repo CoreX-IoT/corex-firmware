@@ -10,16 +10,16 @@
         },
         {
             "name": "Sendy Meiladi",
-            "url": "Lorem Ipsum"
+            "url": "https://github.com/sendymeiladi"
         },
         {
             "name": "Ahmad Yunus",
-            "url": "Lorem Ipsum"
+            "url": "https://github.com/AhmadYunus299"
         }
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/nusabotid/corex-firmware.git"
+        "url": "https://github.com/nusabotid/corex-firmware"
     },
     "version": "1.0.0",
     "exclude": "tests",
