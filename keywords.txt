@@ -6,7 +6,10 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-Dashboard	KEYWORD1
+CoreX	KEYWORD1
+Nusabot	KEYWORD1
+Widget	KEYWORD1
+SimpleTimer	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -30,6 +33,9 @@ setStream	KEYWORD2
 setKeepAlive 	KEYWORD2
 setBufferSize 	KEYWORD2
 setSocketTimeout 	KEYWORD2
+send 	KEYWORD2
+receive 	KEYWORD2
+auth_token 	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
