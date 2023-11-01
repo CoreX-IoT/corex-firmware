@@ -5,7 +5,7 @@
   https://dashboard.nusabot.com
 */
 
-#include "DashboardClient.h"
+#include "CoreXClient.h"
 
 inline void lwmqtt_arduino_timer_set(void *ref, uint32_t timeout) {
   // cast timer reference
@@ -106,10 +106,10 @@ inline lwmqtt_err_t lwmqtt_arduino_network_write(void *ref, uint8_t *buffer, siz
   return LWMQTT_SUCCESS;
 }
 
-static void DashboardHandler(lwmqtt_client_t * /*client*/, void *ref, lwmqtt_string_t topic,
+static void CoreXHandler(lwmqtt_client_t * /*client*/, void *ref, lwmqtt_string_t topic,
                               lwmqtt_message_t message) {
   // get callback
-  auto cb = (DashboardCallback *)ref;
+  auto cb = (CoreXCallback *)ref;
 
   // null terminate topic
   char terminated_topic[topic.len + 1];
@@ -165,14 +165,14 @@ static void DashboardHandler(lwmqtt_client_t * /*client*/, void *ref, lwmqtt_str
 #endif
 }
 
-Dashboard::Dashboard(int bufSize) {
+CoreX::CoreX(int bufSize) {
   // allocate buffers
   this->bufSize = (size_t)bufSize;
   this->readBuf = (uint8_t *)malloc((size_t)bufSize + 1);
   this->writeBuf = (uint8_t *)malloc((size_t)bufSize);
 }
 
-Dashboard::~Dashboard() {
+CoreX::~CoreX() {
   // free will
   this->clearWill();
 
@@ -186,7 +186,7 @@ Dashboard::~Dashboard() {
   free(this->writeBuf);
 }
 
-void Dashboard::begin(Client &_client) {
+void CoreX::begin(Client &_client) {
   // set client
   this->netClient = &_client;
 
@@ -200,10 +200,10 @@ void Dashboard::begin(Client &_client) {
   lwmqtt_set_network(&this->client, &this->network, lwmqtt_arduino_network_read, lwmqtt_arduino_network_write);
 
   // set callback
-  lwmqtt_set_callback(&this->client, (void *)&this->callback, DashboardHandler);
+  lwmqtt_set_callback(&this->client, (void *)&this->callback, CoreXHandler);
 }
 
-void Dashboard::onMessage(DashboardCallbackSimple cb) {
+void CoreX::onMessage(CoreXCallbackSimple cb) {
   // set callback
   this->callback.client = this;
   this->callback.simple = cb;
@@ -214,7 +214,7 @@ void Dashboard::onMessage(DashboardCallbackSimple cb) {
 #endif
 }
 
-void Dashboard::onMessageAdvanced(DashboardCallbackAdvanced cb) {
+void CoreX::onMessageAdvanced(CoreXCallbackAdvanced cb) {
   // set callback
   this->callback.client = this;
   this->callback.simple = nullptr;
@@ -226,7 +226,7 @@ void Dashboard::onMessageAdvanced(DashboardCallbackAdvanced cb) {
 }
 
 #if MQTT_HAS_FUNCTIONAL
-void Dashboard::onMessage(DashboardCallbackSimpleFunction cb) {
+void CoreX::onMessage(CoreXCallbackSimpleFunction cb) {
   // set callback
   this->callback.client = this;
   this->callback.simple = nullptr;
@@ -235,7 +235,7 @@ void Dashboard::onMessage(DashboardCallbackSimpleFunction cb) {
   this->callback.functionAdvanced = nullptr;
 }
 
-void Dashboard::onMessageAdvanced(DashboardCallbackAdvancedFunction cb) {
+void CoreX::onMessageAdvanced(CoreXCallbackAdvancedFunction cb) {
   // set callback
   this->callback.client = this;
   this->callback.simple = nullptr;
@@ -245,18 +245,18 @@ void Dashboard::onMessageAdvanced(DashboardCallbackAdvancedFunction cb) {
 }
 #endif
 
-void Dashboard::setClockSource(DashboardClockSource cb) {
+void CoreX::setClockSource(CoreXClockSource cb) {
   this->timer1.millis = cb;
   this->timer2.millis = cb;
 }
 
-void Dashboard::setHost(IPAddress _address, int _port) {
+void CoreX::setHost(IPAddress _address, int _port) {
   // set address and port
   this->address = _address;
   this->port = _port;
 }
 
-void Dashboard::setHost(const char _hostname[], int _port) {
+void CoreX::setHost(const char _hostname[], int _port) {
   // free hostname if set
   if (this->hostname != nullptr) {
     free((void *)this->hostname);
@@ -267,7 +267,7 @@ void Dashboard::setHost(const char _hostname[], int _port) {
   this->port = _port;
 }
 
-void Dashboard::setWill(const char topic[], const char payload[], bool retained, int qos) {
+void CoreX::setWill(const char topic[], const char payload[], bool retained, int qos) {
   // return if topic is missing
   if (topic == nullptr || strlen(topic) == 0) {
     return;
@@ -293,7 +293,7 @@ void Dashboard::setWill(const char topic[], const char payload[], bool retained,
   this->will->qos = (lwmqtt_qos_t)qos;
 }
 
-void Dashboard::clearWill() {
+void CoreX::clearWill() {
   // return if not set
   if (this->will == nullptr) {
     return;
@@ -314,13 +314,13 @@ void Dashboard::clearWill() {
   this->will = nullptr;
 }
 
-void Dashboard::setKeepAlive(int _keepAlive) { this->keepAlive = _keepAlive; }
+void CoreX::setKeepAlive(int _keepAlive) { this->keepAlive = _keepAlive; }
 
-void Dashboard::setCleanSession(bool _cleanSession) { this->cleanSession = _cleanSession; }
+void CoreX::setCleanSession(bool _cleanSession) { this->cleanSession = _cleanSession; }
 
-void Dashboard::setTimeout(int _timeout) { this->timeout = _timeout; }
+void CoreX::setTimeout(int _timeout) { this->timeout = _timeout; }
 
-bool Dashboard::publish(const char topic[], const char payload[], int length, bool retained, int qos) {
+bool CoreX::publish(const char topic[], const char payload[], int length, bool retained, int qos) {
   // return immediately if not connected
   if (!this->connected()) {
     return false;
@@ -345,7 +345,7 @@ bool Dashboard::publish(const char topic[], const char payload[], int length, bo
   return true;
 }
 
-bool Dashboard::connect(const char clientID[], const char username[], const char password[], bool skip) {
+bool CoreX::connect(const char clientID[], const char username[], const char password[], bool skip) {
   // close left open connection if still connected
   if (!skip && this->connected()) {
     this->close();
@@ -398,7 +398,7 @@ bool Dashboard::connect(const char clientID[], const char username[], const char
   return true;
 }
 
-bool Dashboard::subscribe(const char topic[], int qos) {
+bool CoreX::subscribe(const char topic[], int qos) {
   // return immediately if not connected
   if (!this->connected()) {
     return false;
@@ -416,7 +416,7 @@ bool Dashboard::subscribe(const char topic[], int qos) {
   return true;
 }
 
-bool Dashboard::unsubscribe(const char topic[]) {
+bool CoreX::unsubscribe(const char topic[]) {
   // return immediately if not connected
   if (!this->connected()) {
     return false;
@@ -434,7 +434,7 @@ bool Dashboard::unsubscribe(const char topic[]) {
   return true;
 }
 
-bool Dashboard::loop() {
+bool CoreX::loop() {
   // return immediately if not connected
   if (!this->connected()) {
     return false;
@@ -466,13 +466,13 @@ bool Dashboard::loop() {
   return true;
 }
 
-bool Dashboard::connected() {
+bool CoreX::connected() {
   // a client is connected if the network is connected, a client is available and
   // the connection has been properly initiated
   return this->netClient != nullptr && this->netClient->connected() == 1 && this->_connected;
 }
 
-bool Dashboard::disconnect() {
+bool CoreX::disconnect() {
   // return immediately if not connected anymore
   if (!this->connected()) {
     return false;
@@ -487,7 +487,7 @@ bool Dashboard::disconnect() {
   return this->_lastError == LWMQTT_SUCCESS;
 }
 
-void Dashboard::close() {
+void CoreX::close() {
   // set flag
   this->_connected = false;
 

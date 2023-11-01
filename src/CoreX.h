@@ -7,7 +7,7 @@
 #ifndef MQTT_H
 #define MQTT_H
 
-#include "DashboardClient.h"
-#include "DashboardTimer.h"
+#include "CoreXClient.h"
+#include "CoreXTimer.h"
 
 #endif

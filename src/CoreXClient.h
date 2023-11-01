@@ -31,39 +31,39 @@ extern "C" {
 #include "lwmqtt/lwmqtt.h"
 }
 
-typedef uint32_t (*DashboardClockSource)();
+typedef uint32_t (*CoreXClockSource)();
 
 typedef struct {
   uint32_t start;
   uint32_t timeout;
-  DashboardClockSource millis;
+  CoreXClockSource millis;
 } lwmqtt_arduino_timer_t;
 
 typedef struct {
   Client *client;
 } lwmqtt_arduino_network_t;
 
-class Dashboard;
+class CoreX;
 
-typedef void (*DashboardCallbackSimple)(String &topic, String &payload);
-typedef void (*DashboardCallbackAdvanced)(Dashboard *client, char topic[], char bytes[], int length);
+typedef void (*CoreXCallbackSimple)(String &topic, String &payload);
+typedef void (*CoreXCallbackAdvanced)(CoreX *client, char topic[], char bytes[], int length);
 #if MQTT_HAS_FUNCTIONAL
-typedef std::function<void(String &topic, String &payload)> DashboardCallbackSimpleFunction;
-typedef std::function<void(Dashboard *client, char topic[], char bytes[], int length)>
-    DashboardCallbackAdvancedFunction;
+typedef std::function<void(String &topic, String &payload)> CoreXCallbackSimpleFunction;
+typedef std::function<void(CoreX *client, char topic[], char bytes[], int length)>
+    CoreXCallbackAdvancedFunction;
 #endif
 
 typedef struct {
-  Dashboard *client = nullptr;
-  DashboardCallbackSimple simple = nullptr;
-  DashboardCallbackAdvanced advanced = nullptr;
+  CoreX *client = nullptr;
+  CoreXCallbackSimple simple = nullptr;
+  CoreXCallbackAdvanced advanced = nullptr;
 #if MQTT_HAS_FUNCTIONAL
-  DashboardCallbackSimpleFunction functionSimple = nullptr;
-  DashboardCallbackAdvancedFunction functionAdvanced = nullptr;
+  CoreXCallbackSimpleFunction functionSimple = nullptr;
+  CoreXCallbackAdvancedFunction functionAdvanced = nullptr;
 #endif
-} DashboardCallback;
+} CoreXCallback;
 
-class Dashboard {
+class CoreX {
  private:
   size_t bufSize = 0;
   uint8_t *readBuf = nullptr;
@@ -78,7 +78,7 @@ class Dashboard {
   IPAddress address;
   int port = 0;
   lwmqtt_will_t *will = nullptr;
-  DashboardCallback callback;
+  CoreXCallback callback;
 
   lwmqtt_arduino_network_t network = {nullptr};
   lwmqtt_arduino_timer_t timer1 = {0, 0, nullptr};
@@ -92,9 +92,9 @@ class Dashboard {
  public:
   void *ref = nullptr;
 
-  explicit Dashboard(int bufSize = 128);
+  explicit CoreX(int bufSize = 128);
 
-  ~Dashboard();
+  ~CoreX();
 
   void begin(Client &_client);
   void begin(const char _hostname[], Client &_client) { this->begin(_hostname, 1883, _client); }
@@ -108,14 +108,14 @@ class Dashboard {
     this->setHost(_address, _port);
   }
 
-  void onMessage(DashboardCallbackSimple cb);
-  void onMessageAdvanced(DashboardCallbackAdvanced cb);
+  void onMessage(CoreXCallbackSimple cb);
+  void onMessageAdvanced(CoreXCallbackAdvanced cb);
 #if MQTT_HAS_FUNCTIONAL
-  void onMessage(DashboardCallbackSimpleFunction cb);
-  void onMessageAdvanced(DashboardCallbackAdvancedFunction cb);
+  void onMessage(CoreXCallbackSimpleFunction cb);
+  void onMessageAdvanced(CoreXCallbackAdvancedFunction cb);
 #endif
 
-  void setClockSource(DashboardClockSource cb);
+  void setClockSource(CoreXClockSource cb);
 
   void setHost(const char _hostname[]) { this->setHost(_hostname, 1883); }
   void setHost(const char hostname[], int port);
