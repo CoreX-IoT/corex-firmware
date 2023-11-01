@@ -1,18 +1,30 @@
 {
-    "name": "Dashboard IoT",
-    "keywords": "dashboard, ethernet, mqtt, m2m, iot",
-    "description": "Library for Dashboard IoT Platform.",
+    "name": "CoreX",
+    "keywords": "iot, sensors, control, device, app, web, cloud, communication, protocol, iot, m2m, wifi, ethernet, gsm, gprs, 3g, data, esp8266, esp32",
+    "description": "Library for CoreX IoT Platform by Nusabot.",
+    "authors": [
+        {
+            "name": "Nusabot",
+            "url": "https://nusabot.id",
+            "maintainer": true
+        },
+        {
+            "name": "Sendy Meiladi",
+            "url": "https://github.com/sendymeiladi"
+        },
+        {
+            "name": "Ahmad Yunus",
+            "url": "https://github.com/AhmadYunus299"
+        }
+    ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/nusabot-iot/dashboard-arduino"
+        "url": "https://github.com/nusabotid/corex-firmware"
     },
-    "version": "2.0.3",
+    "version": "1.0.0",
     "exclude": "tests",
     "examples": "examples/*/*.ino",
-    "frameworks": "arduino",
-    "platforms": [
-        "atmelavr",
-        "espressif8266",
-        "espressif32"
-    ]
+    "homepage": "https://corex.id",
+    "frameworks": "*",
+    "platforms": "*"
 }
