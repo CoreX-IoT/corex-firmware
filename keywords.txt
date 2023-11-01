@@ -3,33 +3,39 @@
 #######################################
 
 #######################################
-# Datatypes (CoreX, Nusabot, Widget, SimpleTimer, Widget)
+# Datatypes (KEYWORD1)
 #######################################
 
-Dashboard	CoreX, Nusabot, Widget, SimpleTimer, Widget
+CoreX	KEYWORD1
+Nusabot	KEYWORD1
+Widget	KEYWORD1
+SimpleTimer	KEYWORD1
 
 #######################################
-# Methods and Functions (send, receive, auth_token)
+# Methods and Functions (KEYWORD2)
 #######################################
 
-connect 	send, receive, auth_token
-disconnect 	send, receive, auth_token
-publish 	send, receive, auth_token
-publish_P 	send, receive, auth_token
-beginPublish 	send, receive, auth_token
-endPublish 	send, receive, auth_token
-write	 	send, receive, auth_token
-subscribe 	send, receive, auth_token
-unsubscribe 	send, receive, auth_token
-loop 	send, receive, auth_token
-connected 	send, receive, auth_token
-setServer	send, receive, auth_token
-setCallback	send, receive, auth_token
-setClient	send, receive, auth_token
-setStream	send, receive, auth_token
-setKeepAlive 	send, receive, auth_token
-setBufferSize 	send, receive, auth_token
-setSocketTimeout 	send, receive, auth_token
+connect 	KEYWORD2
+disconnect 	KEYWORD2
+publish 	KEYWORD2
+publish_P 	KEYWORD2
+beginPublish 	KEYWORD2
+endPublish 	KEYWORD2
+write	 	KEYWORD2
+subscribe 	KEYWORD2
+unsubscribe 	KEYWORD2
+loop 	KEYWORD2
+connected 	KEYWORD2
+setServer	KEYWORD2
+setCallback	KEYWORD2
+setClient	KEYWORD2
+setStream	KEYWORD2
+setKeepAlive 	KEYWORD2
+setBufferSize 	KEYWORD2
+setSocketTimeout 	KEYWORD2
+send 	KEYWORD2
+receive 	KEYWORD2
+auth_token 	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
