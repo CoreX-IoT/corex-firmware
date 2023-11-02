@@ -1,6 +1,7 @@
 #ifndef MQTT_CLIENT_H
 #define MQTT_CLIENT_H
-#define AUTH_TOKEN
+
+extern const char* AUTH_TOKEN;
 
 // include functional API if possible. remove min and max macros for some
 // platforms as they will be defined again by Arduino later
@@ -154,15 +155,15 @@ class CoreX {
   bool publish(const String &topic) { return this->publish(topic.c_str(), ""); }
   bool publish(const char topic[]) { return this->publish(topic, ""); }
   bool publish(const String &topic, const String &payload) {
-    return this->publish((AUTH_TOKEN +"/"+topic).c_str(), payload.c_str(), true, 1);
+    return this->publish(String(AUTH_TOKEN)+"/"+topic, payload.c_str(), true, 1);
   }
   bool publish(const String &topic, const String &payload, bool retained, int qos) {
-    return this->publish((AUTH_TOKEN +"/"+topic).c_str(), payload.c_str(), retained, qos);
+    return this->publish(String(AUTH_TOKEN)+"/"+topic, payload.c_str(), retained, qos);
   }
-  bool publish(const String &topic, const String &payload) { return this->publish(topic.c_str(), payload.c_str()); }
-  bool publish(const String &topic, const String &payload, bool retained, int qos) {
-    return this->publish(topic.c_str(), payload.c_str(), retained, qos);
-  }
+  // bool publish(const String &topic, const String &payload) { return this->publish(topic.c_str(), payload.c_str()); }
+  // bool publish(const String &topic, const String &payload, bool retained, int qos) {
+  //   return this->publish(topic.c_str(), payload.c_str(), retained, qos);
+  // }
   bool publish(const char topic[], const String &payload) { return this->publish(topic, payload.c_str()); }
   bool publish(const char topic[], const String &payload, bool retained, int qos) {
     return this->publish(topic, payload.c_str(), retained, qos);
