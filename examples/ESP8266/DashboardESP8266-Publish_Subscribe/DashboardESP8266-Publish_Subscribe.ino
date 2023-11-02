@@ -2,6 +2,8 @@
 #include <Dashboard.h>
 #include "Connection.h"
 
+#define DEVICE_ID "......."
+
 DashboardTimer timer;                   // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
 
 // Ubah nilai berikut sesuai jaringan Anda.
@@ -11,7 +13,7 @@ const char server[] = "broker.emqx.io";
 const String authProject = "......";
 // Atur Client ID dengan nomor acak. Anda bisa menggantinya dengan Client ID apapun.
 // String CleintId = "YourClientId";
-const String clientId = "Nusabot-" + String(random(0xffff), HEX);
+// const String clientId = "Nusabot-" + String(random(0xffff), HEX);
 
 void subscribe(String &topic, String &message) {
   Serial.println("data masuk: \n" + topic + " - " + message);
@@ -29,7 +31,7 @@ void setup() {
   dashboard.onMessage(subscribe);       // Lakukan subscribe pada fungsi subscribe().
   timer.setInterval(1000, publish);     // Lakukan publish setiap 1000 milidetik.
 
-  setupDashboard(authProject, clientId);
+  setupDashboard(authProject, DEVICE_ID);
 }
 
 void loop() {
@@ -39,7 +41,7 @@ void loop() {
 
   // Periksa apakah perangkat masih terhubung.
   if (!dashboard.connected()) {
-    setupDashboard(authProject, clientId);
+    setupDashboard(authProject, DEVICE_ID);
   }
 
   //==LETAKAN KODE PROGRAM DISINI UNTUK DILAKUKAN PROSES==//

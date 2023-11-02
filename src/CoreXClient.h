@@ -144,11 +144,11 @@ class CoreX {
   void dropOverflow(bool enabled);
   uint32_t droppedMessages() { return this->_droppedMessages; }
 
-  bool connect(const char clientId[], bool skip = false) { return this->connect(clientId, nullptr, nullptr, skip); }
-  bool connect(const char clientId[], const char username[], bool skip = false) {
-    return this->connect(clientId, username, nullptr, skip);
+  bool connect(const char DEVICE_ID[], bool skip = false) { return this->connect(DEVICE_ID, nullptr, nullptr, skip); }
+  bool connect(const char DEVICE_ID[], const char username[], bool skip = false) {
+    return this->connect(DEVICE_ID, username, nullptr, skip);
   }
-  bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
+  bool connect(const char DEVICE_ID[], const char username[], const char password[], bool skip = false);
   
   bool publish(const String &topic) { return this->publish(topic.c_str(), ""); }
   bool publish(const char topic[]) { return this->publish(topic, ""); }
