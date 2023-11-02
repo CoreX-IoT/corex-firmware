@@ -1,5 +1,5 @@
-#ifndef DashboardTimer_H
-#define DashboardTimer_H
+#ifndef CoreXTimer_H
+#define CoreXTimer_H
 
 #ifndef __AVR__
 #include <functional>
@@ -17,7 +17,7 @@ typedef std::function<void(void)> timer_callback;
 typedef void (*timer_callback)();
 #endif // __AVR__
 
-class DashboardTimer {
+class CoreXTimer {
 
 public:
     // maximum number of timers
@@ -28,7 +28,7 @@ public:
     const static int RUN_ONCE = 1;
 
     // constructor
-    DashboardTimer();
+    CoreXTimer();
 
     // this function must be called inside loop()
     void run();

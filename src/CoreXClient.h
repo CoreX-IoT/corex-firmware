@@ -31,54 +31,56 @@ extern "C" {
 #include "lwmqtt/lwmqtt.h"
 }
 
-typedef uint32_t (*DashboardClockSource)();
+typedef uint32_t (*CoreXClockSource)();
 
 typedef struct {
   uint32_t start;
   uint32_t timeout;
-  DashboardClockSource millis;
+  CoreXClockSource millis;
 } lwmqtt_arduino_timer_t;
 
 typedef struct {
   Client *client;
 } lwmqtt_arduino_network_t;
 
-class Dashboard;
+class CoreX;
 
-typedef void (*DashboardCallbackSimple)(String &topic, String &payload);
-typedef void (*DashboardCallbackAdvanced)(Dashboard *client, char topic[], char bytes[], int length);
+typedef void (*CoreXCallbackSimple)(String &topic, String &payload);
+typedef void (*CoreXCallbackAdvanced)(CoreX *client, char topic[], char bytes[], int length);
 #if MQTT_HAS_FUNCTIONAL
-typedef std::function<void(String &topic, String &payload)> DashboardCallbackSimpleFunction;
-typedef std::function<void(Dashboard *client, char topic[], char bytes[], int length)>
-    DashboardCallbackAdvancedFunction;
+typedef std::function<void(String &topic, String &payload)> CoreXCallbackSimpleFunction;
+typedef std::function<void(CoreX *client, char topic[], char bytes[], int length)>
+    CoreXCallbackAdvancedFunction;
 #endif
 
 typedef struct {
-  Dashboard *client = nullptr;
-  DashboardCallbackSimple simple = nullptr;
-  DashboardCallbackAdvanced advanced = nullptr;
+  CoreX *client = nullptr;
+  CoreXCallbackSimple simple = nullptr;
+  CoreXCallbackAdvanced advanced = nullptr;
 #if MQTT_HAS_FUNCTIONAL
-  DashboardCallbackSimpleFunction functionSimple = nullptr;
-  DashboardCallbackAdvancedFunction functionAdvanced = nullptr;
+  CoreXCallbackSimpleFunction functionSimple = nullptr;
+  CoreXCallbackAdvancedFunction functionAdvanced = nullptr;
 #endif
-} DashboardCallback;
+} CoreXCallback;
 
-class Dashboard {
+class CoreX {
  private:
-  size_t bufSize = 0;
+  size_t readBufSize = 0;
+  size_t writeBufSize = 0;
   uint8_t *readBuf = nullptr;
   uint8_t *writeBuf = nullptr;
 
   uint16_t keepAlive = 10;
   bool cleanSession = true;
   uint32_t timeout = 1000;
+  bool _sessionPresent = false;
 
   Client *netClient = nullptr;
   const char *hostname = nullptr;
   IPAddress address;
   int port = 0;
   lwmqtt_will_t *will = nullptr;
-  DashboardCallback callback;
+  CoreXCallback callback;
 
   lwmqtt_arduino_network_t network = {nullptr};
   lwmqtt_arduino_timer_t timer1 = {0, 0, nullptr};
@@ -86,15 +88,18 @@ class Dashboard {
   lwmqtt_client_t client = lwmqtt_client_t();
 
   bool _connected = false;
+  uint16_t nextDupPacketID = 0;
   lwmqtt_return_code_t _returnCode = (lwmqtt_return_code_t)0;
   lwmqtt_err_t _lastError = (lwmqtt_err_t)0;
+  uint32_t _droppedMessages = 0;
 
  public:
   void *ref = nullptr;
 
-  explicit Dashboard(int bufSize = 128);
+  explicit CoreX(int bufSize = 128) : CoreX(bufSize, bufSize) {}
+  CoreX(int readSize, int writeBufSize);
 
-  ~Dashboard();
+  ~CoreX();
 
   void begin(Client &_client);
   void begin(const char _hostname[], Client &_client) { this->begin(_hostname, 1883, _client); }
@@ -108,14 +113,14 @@ class Dashboard {
     this->setHost(_address, _port);
   }
 
-  void onMessage(DashboardCallbackSimple cb);
-  void onMessageAdvanced(DashboardCallbackAdvanced cb);
+  void onMessage(CoreXCallbackSimple cb);
+  void onMessageAdvanced(CoreXCallbackAdvanced cb);
 #if MQTT_HAS_FUNCTIONAL
-  void onMessage(DashboardCallbackSimpleFunction cb);
-  void onMessageAdvanced(DashboardCallbackAdvancedFunction cb);
+  void onMessage(CoreXCallbackSimpleFunction cb);
+  void onMessageAdvanced(CoreXCallbackAdvancedFunction cb);
 #endif
 
-  void setClockSource(DashboardClockSource cb);
+  void setClockSource(CoreXClockSource cb);
 
   void setHost(const char _hostname[]) { this->setHost(_hostname, 1883); }
   void setHost(const char hostname[], int port);
@@ -130,39 +135,39 @@ class Dashboard {
   void setKeepAlive(int keepAlive);
   void setCleanSession(bool cleanSession);
   void setTimeout(int timeout);
-
   void setOptions(int _keepAlive, bool _cleanSession, int _timeout) {
     this->setKeepAlive(_keepAlive);
     this->setCleanSession(_cleanSession);
     this->setTimeout(_timeout);
   }
 
+  void dropOverflow(bool enabled);
+  uint32_t droppedMessages() { return this->_droppedMessages; }
+
   bool connect(const char clientId[], bool skip = false) { return this->connect(clientId, nullptr, nullptr, skip); }
   bool connect(const char clientId[], const char username[], bool skip = false) {
     return this->connect(clientId, username, nullptr, skip);
   }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
-
-  bool publish(const String &authProject, const String &topic) { 
-    return this->publish((authProject +"/"+topic).c_str(), ""); 
-  }
-  bool publish(const char topic[]) { 
-    return this->publish(topic, "");
-  }
+  
+  bool publish(const String &topic) { return this->publish(topic.c_str(), ""); }
+  bool publish(const char topic[]) { return this->publish(topic, ""); }
   bool publish(const String &authProject, const String &topic, const String &payload) {
     return this->publish((authProject +"/"+topic).c_str(), payload.c_str(), true, 1);
   }
   bool publish(const String &authProject, const String &topic, const String &payload, bool retained, int qos) {
     return this->publish((authProject +"/"+topic).c_str(), payload.c_str(), retained, qos);
   }
-  bool publish(const char topic[], const String &payload) {
-    return this->publish(topic, payload.c_str(), true, 1);
+  bool publish(const String &topic, const String &payload) { return this->publish(topic.c_str(), payload.c_str()); }
+  bool publish(const String &topic, const String &payload, bool retained, int qos) {
+    return this->publish(topic.c_str(), payload.c_str(), retained, qos);
   }
+  bool publish(const char topic[], const String &payload) { return this->publish(topic, payload.c_str()); }
   bool publish(const char topic[], const String &payload, bool retained, int qos) {
     return this->publish(topic, payload.c_str(), retained, qos);
   }
   bool publish(const char topic[], const char payload[]) {
-    return this->publish(topic, (char *)payload, (int)strlen(payload), true, 1);
+    return this->publish(topic, (char *)payload, (int)strlen(payload));
   }
   bool publish(const char topic[], const char payload[], bool retained, int qos) {
     return this->publish(topic, (char *)payload, (int)strlen(payload), retained, qos);
@@ -172,9 +177,13 @@ class Dashboard {
   }
   bool publish(const char topic[], const char payload[], int length, bool retained, int qos);
 
-  bool subscribe(const String &topic) { return this->subscribe(topic.c_str(), 1); }
+
+  uint16_t lastPacketID();
+  void prepareDuplicate(uint16_t packetID);
+
+  bool subscribe(const String &topic) { return this->subscribe(topic.c_str()); }
   bool subscribe(const String &topic, int qos) { return this->subscribe(topic.c_str(), qos); }
-  bool subscribe(const char topic[]) { return this->subscribe(topic, 1); }
+  bool subscribe(const char topic[]) { return this->subscribe(topic, 0); }
   bool subscribe(const char topic[], int qos);
 
   bool unsubscribe(const String &topic) { return this->unsubscribe(topic.c_str()); }
@@ -182,6 +191,7 @@ class Dashboard {
 
   bool loop();
   bool connected();
+  bool sessionPresent() { return this->_sessionPresent; }
 
   lwmqtt_err_t lastError() { return this->_lastError; }
   lwmqtt_return_code_t returnCode() { return this->_returnCode; }

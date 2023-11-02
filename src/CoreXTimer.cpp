@@ -1,4 +1,4 @@
-#include "DashboardTimer.h"
+#include "CoreXTimer.h"
 
 
 // Select time function:
@@ -6,7 +6,7 @@
 static inline unsigned long elapsed() { return millis(); }
 
 
-DashboardTimer::DashboardTimer() {
+CoreXTimer::CoreXTimer() {
     unsigned long current_millis = elapsed();
 
     for (int i = 0; i < MAX_TIMERS; i++) {
@@ -20,7 +20,7 @@ DashboardTimer::DashboardTimer() {
 }
 
 
-void DashboardTimer::run() {
+void CoreXTimer::run() {
     int i;
     unsigned long current_millis;
 
@@ -85,7 +85,7 @@ void DashboardTimer::run() {
 
 // find the first available slot
 // return -1 if none found
-int DashboardTimer::findFirstFreeSlot() {
+int CoreXTimer::findFirstFreeSlot() {
     int i;
 
     // all slots are used
@@ -105,7 +105,7 @@ int DashboardTimer::findFirstFreeSlot() {
 }
 
 
-int DashboardTimer::setTimer(unsigned long d, timer_callback f, int n) {
+int CoreXTimer::setTimer(unsigned long d, timer_callback f, int n) {
     int freeTimer;
 
     freeTimer = findFirstFreeSlot();
@@ -129,17 +129,17 @@ int DashboardTimer::setTimer(unsigned long d, timer_callback f, int n) {
 }
 
 
-int DashboardTimer::setInterval(unsigned long d, timer_callback f) {
+int CoreXTimer::setInterval(unsigned long d, timer_callback f) {
     return setTimer(d, f, RUN_FOREVER);
 }
 
 
-int DashboardTimer::setTimeout(unsigned long d, timer_callback f) {
+int CoreXTimer::setTimeout(unsigned long d, timer_callback f) {
     return setTimer(d, f, RUN_ONCE);
 }
 
 
-void DashboardTimer::deleteTimer(int timerId) {
+void CoreXTimer::deleteTimer(int timerId) {
     if (timerId >= MAX_TIMERS) {
         return;
     }
@@ -165,7 +165,7 @@ void DashboardTimer::deleteTimer(int timerId) {
 
 
 // function contributed by code@rowansimms.com
-void DashboardTimer::restartTimer(int numTimer) {
+void CoreXTimer::restartTimer(int numTimer) {
     if (numTimer >= MAX_TIMERS) {
         return;
     }
@@ -174,7 +174,7 @@ void DashboardTimer::restartTimer(int numTimer) {
 }
 
 
-boolean DashboardTimer::isEnabled(int numTimer) {
+boolean CoreXTimer::isEnabled(int numTimer) {
     if (numTimer >= MAX_TIMERS) {
         return false;
     }
@@ -183,7 +183,7 @@ boolean DashboardTimer::isEnabled(int numTimer) {
 }
 
 
-void DashboardTimer::enable(int numTimer) {
+void CoreXTimer::enable(int numTimer) {
     if (numTimer >= MAX_TIMERS) {
         return;
     }
@@ -192,7 +192,7 @@ void DashboardTimer::enable(int numTimer) {
 }
 
 
-void DashboardTimer::disable(int numTimer) {
+void CoreXTimer::disable(int numTimer) {
     if (numTimer >= MAX_TIMERS) {
         return;
     }
@@ -201,7 +201,7 @@ void DashboardTimer::disable(int numTimer) {
 }
 
 
-void DashboardTimer::toggle(int numTimer) {
+void CoreXTimer::toggle(int numTimer) {
     if (numTimer >= MAX_TIMERS) {
         return;
     }
@@ -210,6 +210,6 @@ void DashboardTimer::toggle(int numTimer) {
 }
 
 
-int DashboardTimer::getNumTimers() {
+int CoreXTimer::getNumTimers() {
     return numTimers;
 }
