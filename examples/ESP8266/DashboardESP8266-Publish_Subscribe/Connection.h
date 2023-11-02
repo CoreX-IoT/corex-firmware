@@ -1,7 +1,7 @@
 WiFiClient net;
 Dashboard dashboard;
 
-void setupDashboard(String authProject, String clientId) {
+void setupDashboard(String AUTH_TOKEN, String clientId) {
   Serial.println("Dashboard IoT by Nusabot");
   Serial.println("Menghubungkan ke WiFi");
   while (WiFi.status() != WL_CONNECTED) {
@@ -18,5 +18,5 @@ void setupDashboard(String authProject, String clientId) {
 
   Serial.println("\nTerhubung ke server!");
 
-  dashboard.subscribe(authProject+"/data/#");
+  dashboard.subscribe(AUTH_TOKEN+"/data/#");
 }

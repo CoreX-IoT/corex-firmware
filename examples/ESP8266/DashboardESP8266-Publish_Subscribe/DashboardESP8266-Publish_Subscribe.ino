@@ -2,6 +2,8 @@
 #include <Dashboard.h>
 #include "Connection.h"
 
+#define AUTH_TOKEN "xxxxxxxx"
+
 DashboardTimer timer;                   // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
 
 // Ubah nilai berikut sesuai jaringan Anda.
@@ -29,7 +31,7 @@ void setup() {
   dashboard.onMessage(subscribe);       // Lakukan subscribe pada fungsi subscribe().
   timer.setInterval(1000, publish);     // Lakukan publish setiap 1000 milidetik.
 
-  setupDashboard(authProject, clientId);
+  setupDashboard(AUTH_TOKEN, clientId);
 }
 
 void loop() {
@@ -39,7 +41,7 @@ void loop() {
 
   // Periksa apakah perangkat masih terhubung.
   if (!dashboard.connected()) {
-    setupDashboard(authProject, clientId);
+    setupDashboard(AUTH_TOKEN, clientId);
   }
 
   //==LETAKAN KODE PROGRAM DISINI UNTUK DILAKUKAN PROSES==//
