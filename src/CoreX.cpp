@@ -1,11 +1,4 @@
-/*
-
-  Dashboard.cpp - Library for Dashboard IoT Platform.
-  Lorenz Adam Damara
-  https://dashboard.nusabot.com
-*/
-
-#include "CoreXClient.h"
+#include "CoreX.h"
 
 inline void lwmqtt_arduino_timer_set(void *ref, uint32_t timeout) {
   // cast timer reference
@@ -76,7 +69,7 @@ inline lwmqtt_err_t lwmqtt_arduino_network_read(void *ref, uint8_t *buffer, size
 
     // wait/unblock for some time (RTOS based boards may otherwise fail since
     // the wifi task cannot provide the data)
-    delay(0);
+    delay(1);
 
     // otherwise check status
     if (!n->client->connected()) {
@@ -165,11 +158,12 @@ static void CoreXHandler(lwmqtt_client_t * /*client*/, void *ref, lwmqtt_string_
 #endif
 }
 
-CoreX::CoreX(int bufSize) {
+CoreX::CoreX(int readBufSize, int writeBufSize) {
   // allocate buffers
-  this->bufSize = (size_t)bufSize;
-  this->readBuf = (uint8_t *)malloc((size_t)bufSize + 1);
-  this->writeBuf = (uint8_t *)malloc((size_t)bufSize);
+  this->readBufSize = (size_t)readBufSize;
+  this->writeBufSize = (size_t)writeBufSize;
+  this->readBuf = (uint8_t *)malloc((size_t)readBufSize + 1);
+  this->writeBuf = (uint8_t *)malloc((size_t)writeBufSize);
 }
 
 CoreX::~CoreX() {
@@ -191,7 +185,7 @@ void CoreX::begin(Client &_client) {
   this->netClient = &_client;
 
   // initialize client
-  lwmqtt_init(&this->client, this->writeBuf, this->bufSize, this->readBuf, this->bufSize);
+  lwmqtt_init(&this->client, this->writeBuf, this->writeBufSize, this->readBuf, this->readBufSize);
 
   // set timers
   lwmqtt_set_timers(&this->client, &this->timer1, &this->timer2, lwmqtt_arduino_timer_set, lwmqtt_arduino_timer_get);
@@ -320,29 +314,9 @@ void CoreX::setCleanSession(bool _cleanSession) { this->cleanSession = _cleanSes
 
 void CoreX::setTimeout(int _timeout) { this->timeout = _timeout; }
 
-bool CoreX::publish(const char topic[], const char payload[], int length, bool retained, int qos) {
-  // return immediately if not connected
-  if (!this->connected()) {
-    return false;
-  }
-
-  // prepare message
-  lwmqtt_message_t message = lwmqtt_default_message;
-  message.payload = (uint8_t *)payload;
-  message.payload_len = (size_t)length;
-  message.retained = retained;
-  message.qos = lwmqtt_qos_t(qos);
-
-  // publish message
-  this->_lastError = lwmqtt_publish(&this->client, lwmqtt_string(topic), message, this->timeout);
-  if (this->_lastError != LWMQTT_SUCCESS) {
-    // close connection
-    this->close();
-
-    return false;
-  }
-
-  return true;
+void CoreX::dropOverflow(bool enabled) {
+  // configure drop overflow
+  lwmqtt_drop_overflow(&this->client, enabled, &this->_droppedMessages);
 }
 
 bool CoreX::connect(const char clientID[], const char username[], const char password[], bool skip) {
@@ -369,7 +343,7 @@ bool CoreX::connect(const char clientID[], const char username[], const char pas
   }
 
   // prepare options
-  lwmqtt_options_t options = lwmqtt_default_options;
+  lwmqtt_connect_options_t options = lwmqtt_default_connect_options;
   options.keep_alive = this->keepAlive;
   options.clean_session = this->cleanSession;
   options.client_id = lwmqtt_string(clientID);
@@ -377,14 +351,18 @@ bool CoreX::connect(const char clientID[], const char username[], const char pas
   // set username and password if available
   if (username != nullptr) {
     options.username = lwmqtt_string(username);
-
-    if (password != nullptr) {
-      options.password = lwmqtt_string(password);
-    }
+  }
+  if (password != nullptr) {
+    options.password = lwmqtt_string(password);
   }
 
   // connect to broker
-  this->_lastError = lwmqtt_connect(&this->client, options, this->will, &this->_returnCode, this->timeout);
+  this->_lastError = lwmqtt_connect(&this->client, &options, this->will, this->timeout);
+
+  // copy return code
+  this->_returnCode = options.return_code;
+
+  // handle error
   if (this->_lastError != LWMQTT_SUCCESS) {
     // close connection
     this->close();
@@ -392,10 +370,56 @@ bool CoreX::connect(const char clientID[], const char username[], const char pas
     return false;
   }
 
+  // copy session present flag
+  this->_sessionPresent = options.session_present;
+
   // set flag
   this->_connected = true;
 
   return true;
+}
+
+bool CoreX::publish(const char topic[], const char payload[], int length, bool retained, int qos) {
+  // return immediately if not connected
+  if (!this->connected()) {
+    return false;
+  }
+
+  // prepare message
+  lwmqtt_message_t message = lwmqtt_default_message;
+  message.payload = (uint8_t *)payload;
+  message.payload_len = (size_t)length;
+  message.retained = retained;
+  message.qos = lwmqtt_qos_t(qos);
+
+  // prepare options
+  lwmqtt_publish_options_t options = lwmqtt_default_publish_options;
+
+  // set duplicate packet id if available
+  if (this->nextDupPacketID > 0) {
+    options.dup_id = &this->nextDupPacketID;
+  }
+
+  // publish message
+  this->_lastError = lwmqtt_publish(&this->client, &options, lwmqtt_string(topic), message, this->timeout);
+  if (this->_lastError != LWMQTT_SUCCESS) {
+    // close connection
+    this->close();
+
+    return false;
+  }
+
+  return true;
+}
+
+uint16_t CoreX::lastPacketID() {
+  // get last packet id from client
+  return this->client.last_packet_id;
+}
+
+void CoreX::prepareDuplicate(uint16_t packetID) {
+  // set next duplicate packet id
+  this->nextDupPacketID = packetID;
 }
 
 bool CoreX::subscribe(const char topic[], int qos) {

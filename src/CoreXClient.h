@@ -65,13 +65,15 @@ typedef struct {
 
 class CoreX {
  private:
-  size_t bufSize = 0;
+  size_t readBufSize = 0;
+  size_t writeBufSize = 0;
   uint8_t *readBuf = nullptr;
   uint8_t *writeBuf = nullptr;
 
   uint16_t keepAlive = 10;
   bool cleanSession = true;
   uint32_t timeout = 1000;
+  bool _sessionPresent = false;
 
   Client *netClient = nullptr;
   const char *hostname = nullptr;
@@ -86,13 +88,16 @@ class CoreX {
   lwmqtt_client_t client = lwmqtt_client_t();
 
   bool _connected = false;
+  uint16_t nextDupPacketID = 0;
   lwmqtt_return_code_t _returnCode = (lwmqtt_return_code_t)0;
   lwmqtt_err_t _lastError = (lwmqtt_err_t)0;
+  uint32_t _droppedMessages = 0;
 
  public:
   void *ref = nullptr;
 
-  explicit CoreX(int bufSize = 128);
+  explicit CoreX(int bufSize = 128) : CoreX(bufSize, bufSize) {}
+  CoreX(int readSize, int writeBufSize);
 
   ~CoreX();
 
@@ -130,39 +135,39 @@ class CoreX {
   void setKeepAlive(int keepAlive);
   void setCleanSession(bool cleanSession);
   void setTimeout(int timeout);
-
   void setOptions(int _keepAlive, bool _cleanSession, int _timeout) {
     this->setKeepAlive(_keepAlive);
     this->setCleanSession(_cleanSession);
     this->setTimeout(_timeout);
   }
 
+  void dropOverflow(bool enabled);
+  uint32_t droppedMessages() { return this->_droppedMessages; }
+
   bool connect(const char clientId[], bool skip = false) { return this->connect(clientId, nullptr, nullptr, skip); }
   bool connect(const char clientId[], const char username[], bool skip = false) {
     return this->connect(clientId, username, nullptr, skip);
   }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
-
-  bool publish(const String &authProject, const String &topic) { 
-    return this->publish((authProject +"/"+topic).c_str(), ""); 
-  }
-  bool publish(const char topic[]) { 
-    return this->publish(topic, "");
-  }
+  
+  bool publish(const String &topic) { return this->publish(topic.c_str(), ""); }
+  bool publish(const char topic[]) { return this->publish(topic, ""); }
   bool publish(const String &authProject, const String &topic, const String &payload) {
     return this->publish((authProject +"/"+topic).c_str(), payload.c_str(), true, 1);
   }
   bool publish(const String &authProject, const String &topic, const String &payload, bool retained, int qos) {
     return this->publish((authProject +"/"+topic).c_str(), payload.c_str(), retained, qos);
   }
-  bool publish(const char topic[], const String &payload) {
-    return this->publish(topic, payload.c_str(), true, 1);
+  bool publish(const String &topic, const String &payload) { return this->publish(topic.c_str(), payload.c_str()); }
+  bool publish(const String &topic, const String &payload, bool retained, int qos) {
+    return this->publish(topic.c_str(), payload.c_str(), retained, qos);
   }
+  bool publish(const char topic[], const String &payload) { return this->publish(topic, payload.c_str()); }
   bool publish(const char topic[], const String &payload, bool retained, int qos) {
     return this->publish(topic, payload.c_str(), retained, qos);
   }
   bool publish(const char topic[], const char payload[]) {
-    return this->publish(topic, (char *)payload, (int)strlen(payload), true, 1);
+    return this->publish(topic, (char *)payload, (int)strlen(payload));
   }
   bool publish(const char topic[], const char payload[], bool retained, int qos) {
     return this->publish(topic, (char *)payload, (int)strlen(payload), retained, qos);
@@ -172,9 +177,13 @@ class CoreX {
   }
   bool publish(const char topic[], const char payload[], int length, bool retained, int qos);
 
-  bool subscribe(const String &topic) { return this->subscribe(topic.c_str(), 1); }
+
+  uint16_t lastPacketID();
+  void prepareDuplicate(uint16_t packetID);
+
+  bool subscribe(const String &topic) { return this->subscribe(topic.c_str()); }
   bool subscribe(const String &topic, int qos) { return this->subscribe(topic.c_str(), qos); }
-  bool subscribe(const char topic[]) { return this->subscribe(topic, 1); }
+  bool subscribe(const char topic[]) { return this->subscribe(topic, 0); }
   bool subscribe(const char topic[], int qos);
 
   bool unsubscribe(const String &topic) { return this->unsubscribe(topic.c_str()); }
@@ -182,6 +191,7 @@ class CoreX {
 
   bool loop();
   bool connected();
+  bool sessionPresent() { return this->_sessionPresent; }
 
   lwmqtt_err_t lastError() { return this->_lastError; }
   lwmqtt_return_code_t returnCode() { return this->_returnCode; }
