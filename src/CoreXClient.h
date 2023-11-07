@@ -152,20 +152,20 @@ class CoreX {
   }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
   
-  bool publish(const String &topic) { return this->publish(topic.c_str(), ""); }
-  bool publish(const char topic[]) { return this->publish(topic, ""); }
-  bool publish(const String &topic, const String &payload) {
-    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), true, 1);
+  bool send(const String &topic) { return this->send(topic.c_str(), ""); }
+  bool send(const char topic[]) { return this->send(topic, ""); }
+  bool send(const String &topic, const String &payload) {
+    return this->send((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), true, 1);
   }
-  bool publish(const String &topic, const String &payload, bool retained, int qos) {
-    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), retained, qos);
+  bool send(const String &topic, const String &payload, bool retained, int qos) {
+    return this->send((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), retained, qos);
   }
 
-  bool publish(const char topic[], const char payload[], bool retained, int qos) {
-    return this->publish(topic, (char *)payload, (int)strlen(payload), retained, qos);
+  bool send(const char topic[], const char payload[], bool retained, int qos) {
+    return this->send(topic, (char *)payload, (int)strlen(payload), retained, qos);
   }
   
-  bool publish(const char topic[], const char payload[], int length, bool retained, int qos);
+  bool send(const char topic[], const char payload[], int length, bool retained, int qos);
 
 
   uint16_t lastPacketID();
