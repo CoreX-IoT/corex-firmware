@@ -1,13 +1,8 @@
-/*
-  Dashboard.h - Library for Dashboard IoT Platform.
-  Lorenz Adam Damara
-  https://dashboard.nusabot.com
-*/
-
-#ifndef MQTT_H
-#define MQTT_H
+#ifndef COREX_H
+#define COREX_H
 
 #include "CoreXClient.h"
 #include "CoreXTimer.h"
+
 
 #endif

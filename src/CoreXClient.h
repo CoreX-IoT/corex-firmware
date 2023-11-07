@@ -1,5 +1,7 @@
-#ifndef MQTT_CLIENT_H
-#define MQTT_CLIENT_H
+#ifndef COREX_CLIENT_H
+#define COREX_CLIENT_H
+
+extern const char* AUTH_TOKEN;
 
 // include functional API if possible. remove min and max macros for some
 // platforms as they will be defined again by Arduino later
@@ -152,29 +154,17 @@ class CoreX {
   
   bool publish(const String &topic) { return this->publish(topic.c_str(), ""); }
   bool publish(const char topic[]) { return this->publish(topic, ""); }
-  bool publish(const String &authProject, const String &topic, const String &payload) {
-    return this->publish((authProject +"/"+topic).c_str(), payload.c_str(), true, 1);
+  bool publish(const String &topic, const String &payload) {
+    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), true, 1);
   }
-  bool publish(const String &authProject, const String &topic, const String &payload, bool retained, int qos) {
-    return this->publish((authProject +"/"+topic).c_str(), payload.c_str(), retained, qos);
-  }
-  bool publish(const String &topic, const String &payload) { return this->publish(topic.c_str(), payload.c_str()); }
   bool publish(const String &topic, const String &payload, bool retained, int qos) {
-    return this->publish(topic.c_str(), payload.c_str(), retained, qos);
+    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), retained, qos);
   }
-  bool publish(const char topic[], const String &payload) { return this->publish(topic, payload.c_str()); }
-  bool publish(const char topic[], const String &payload, bool retained, int qos) {
-    return this->publish(topic, payload.c_str(), retained, qos);
-  }
-  bool publish(const char topic[], const char payload[]) {
-    return this->publish(topic, (char *)payload, (int)strlen(payload));
-  }
+
   bool publish(const char topic[], const char payload[], bool retained, int qos) {
     return this->publish(topic, (char *)payload, (int)strlen(payload), retained, qos);
   }
-  bool publish(const char topic[], const char payload[], int length) {
-    return this->publish(topic, payload, length, false, 0);
-  }
+  
   bool publish(const char topic[], const char payload[], int length, bool retained, int qos);
 
 
