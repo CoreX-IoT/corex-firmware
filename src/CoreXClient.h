@@ -2,6 +2,7 @@
 #define COREX_CLIENT_H
 
 extern const char* AUTH_TOKEN;
+extern const char* DEVICE_ID;
 
 // include functional API if possible. remove min and max macros for some
 // platforms as they will be defined again by Arduino later
@@ -146,9 +147,12 @@ class CoreX {
   void dropOverflow(bool enabled);
   uint32_t droppedMessages() { return this->_droppedMessages; }
 
-  bool connect(const char clientId[], bool skip = false) { return this->connect(clientId, nullptr, nullptr, skip); }
-  bool connect(const char clientId[], const char username[], bool skip = false) {
-    return this->connect(clientId, username, nullptr, skip);
+  bool connect(bool skip = false) { return this->connect(DEVICE_ID, nullptr, nullptr, skip); }
+  bool connect(const String &username, bool skip = false) {
+    return this->connect(DEVICE_ID, username.c_str(), nullptr, skip);
+  }
+  bool connect(const String &username, const String &password,bool skip = false) {
+    return this->connect(DEVICE_ID, username.c_str(), password.c_str(), skip);
   }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
   
