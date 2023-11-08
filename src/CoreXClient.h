@@ -171,10 +171,10 @@ class CoreX {
   uint16_t lastPacketID();
   void prepareDuplicate(uint16_t packetID);
 
-  bool receive(const String &topic) { return this->receive(topic.c_str()); }
-  bool receive(const String &topic, int qos) { return this->receive(topic.c_str(), qos); }
-  bool receive(const char topic[]) { return this->receive(topic, 0); }
-  bool receive(const char topic[], int qos);
+  bool receive(const String &topic) { return this->subscribe(topic.c_str()); }
+  bool receive(const String &topic, int qos) { return this->subscribe(topic.c_str(), qos); }
+  bool receive(const char topic[]) { return this->subscribe(topic, 0); }
+  bool subscribe(const char topic[], int qos);
 
   bool unsubscribe(const String &topic) { return this->unsubscribe(topic.c_str()); }
   bool unsubscribe(const char topic[]);
