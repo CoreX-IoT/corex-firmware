@@ -131,7 +131,7 @@ class CoreX {
   void setHost(IPAddress _address, int port);
 
   void setWill(const char topic[]) { this->setWill(topic, ""); }
-  void setWill(const char topic[], const char payload[]) { this->setWill(topic, payload, false, 0); }
+  void setWill(const char topic[], const char payload[]) { this->setWill(topic, payload, true, 1); }
   void setWill(const char topic[], const char payload[], bool retained, int qos);
   void clearWill();
 
@@ -147,7 +147,11 @@ class CoreX {
   void dropOverflow(bool enabled);
   uint32_t droppedMessages() { return this->_droppedMessages; }
 
-  bool connect(bool skip = false) { subscribe(String(AUTH_TOKEN) + "/#"); return this->connect(DEVICE_ID, "nusabotid", "nusabotid", skip); }
+  bool connect(bool skip = false) { 
+    setWill((String(AUTH_TOKEN)+"/disconnect/"+String(DEVICE_ID)).c_str(), "true");  
+    connect(DEVICE_ID, "nusabotid", "nusabotid", skip);
+    return this->subscribe(String(AUTH_TOKEN) + "/#");
+  }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
   
   bool send(const String &topic) { return this->send(topic.c_str(), ""); }
@@ -161,7 +165,7 @@ class CoreX {
   uint16_t lastPacketID();
   void prepareDuplicate(uint16_t packetID);
 
-  bool receive(const String &topic) { return this->subscribe(topic.c_str()); }
+  bool receive(const String &topic) { return this->subscribe(topic.c_str(), 0); }
   bool receive(const String &topic, int qos) { return this->subscribe(topic.c_str(), qos); }
   bool receive(const char topic[]) { return this->subscribe(topic, 0); }
   bool subscribe(const char topic[], int qos);
