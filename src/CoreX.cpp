@@ -422,7 +422,7 @@ void CoreX::prepareDuplicate(uint16_t packetID) {
   this->nextDupPacketID = packetID;
 }
 
-bool CoreX::receive(const char topic[], int qos) {
+bool CoreX::subscribe(const char topic[], int qos) {
   // return immediately if not connected
   if (!this->connected()) {
     return false;
