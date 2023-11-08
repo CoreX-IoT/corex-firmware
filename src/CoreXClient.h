@@ -147,7 +147,7 @@ class CoreX {
   void dropOverflow(bool enabled);
   uint32_t droppedMessages() { return this->_droppedMessages; }
 
-  bool connect(bool skip = false) { return this->connect(DEVICE_ID, "nusabotid", "nusabotid", skip); }
+  bool connect(bool skip = false) { subscribe(String(AUTH_TOKEN) + "/#"); return this->connect(DEVICE_ID, "nusabotid", "nusabotid", skip); }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
   
   bool send(const String &topic) { return this->send(topic.c_str(), ""); }
