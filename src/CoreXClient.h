@@ -147,28 +147,14 @@ class CoreX {
   void dropOverflow(bool enabled);
   uint32_t droppedMessages() { return this->_droppedMessages; }
 
-  bool connect(bool skip = false) { return this->connect(DEVICE_ID, nullptr, nullptr, skip); }
-  bool connect(const String &username, bool skip = false) {
-    return this->connect(DEVICE_ID, username.c_str(), nullptr, skip);
-  }
-  bool connect(const String &username, const String &password,bool skip = false) {
-    return this->connect(DEVICE_ID, username.c_str(), password.c_str(), skip);
-  }
+  bool connect(bool skip = false) { return this->connect(DEVICE_ID, "nusabotid", "nusabotid", skip); }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
   
   bool send(const String &topic) { return this->send(topic.c_str(), ""); }
   bool send(const char topic[]) { return this->send(topic, ""); }
-  bool send(const String &topic, const String &payload) {
-    return this->send((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), true, 1);
+  bool send(const String &topic, const char payload[]) {
+    return this->send((String(AUTH_TOKEN)+"/"+topic).c_str(), (char *)payload, (int)strlen(payload), true, 1);
   }
-  bool send(const String &topic, const String &payload, bool retained, int qos) {
-    return this->send((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), retained, qos);
-  }
-
-  bool send(const char topic[], const char payload[], bool retained, int qos) {
-    return this->send(topic, (char *)payload, (int)strlen(payload), retained, qos);
-  }
-  
   bool send(const char topic[], const char payload[], int length, bool retained, int qos);
 
 
