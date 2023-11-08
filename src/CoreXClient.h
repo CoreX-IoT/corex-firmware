@@ -153,9 +153,9 @@ class CoreX {
   bool send(const String &topic) { return this->send(topic.c_str(), ""); }
   bool send(const char topic[]) { return this->send(topic, ""); }
   bool send(const String &topic, const char payload[]) {
-    return this->send((String(AUTH_TOKEN)+"/"+topic).c_str(), (char *)payload, (int)strlen(payload), true, 1);
+    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), (char *)payload, (int)strlen(payload), true, 1);
   }
-  bool send(const char topic[], const char payload[], int length, bool retained, int qos);
+  bool publish(const char topic[], const char payload[], int length, bool retained, int qos);
 
 
   uint16_t lastPacketID();

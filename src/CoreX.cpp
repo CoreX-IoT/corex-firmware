@@ -379,7 +379,7 @@ bool CoreX::connect(const char clientID[], const char username[], const char pas
   return true;
 }
 
-bool CoreX::send(const char topic[], const char payload[], int length, bool retained, int qos) {
+bool CoreX::publish(const char topic[], const char payload[], int length, bool retained, int qos) {
   // return immediately if not connected
   if (!this->connected()) {
     return false;
