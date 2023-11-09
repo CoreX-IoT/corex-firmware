@@ -150,7 +150,7 @@ class CoreX {
   bool connect(bool skip = false) { 
     setWill((String(AUTH_TOKEN)+"/disconnect/"+String(DEVICE_ID)).c_str(), "true");  
     connect(DEVICE_ID, "nusabotid", "nusabotid", skip);
-    return this->subscribe(String(AUTH_TOKEN) + "/#");
+    return this->subscribe((String(AUTH_TOKEN) + "/#").c_str(), 1);
   }
   bool connect(const char clientID[], const char username[], const char password[], bool skip = false);
   
