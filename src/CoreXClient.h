@@ -162,6 +162,16 @@ class CoreX {
   bool send(const String &topic, const char payload[]) {
     return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), (char *)payload, (int)strlen(payload), true, 1);
   }
+  bool send(const String &topic, const String &payload) {
+    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), payload.c_str(), payload.length(), true, 1);
+  }
+  bool send(const String &topic, int &payload) {
+    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), String(payload).c_str(), String(payload).length(), true, 1);
+  }
+  bool send(const String &topic, float &payload) {
+    return this->publish((String(AUTH_TOKEN)+"/"+topic).c_str(), String(payload).c_str(), String(payload).length(), true, 1);
+  }
+
   bool publish(const char topic[], const char payload[], int length, bool retained, int qos);
 
 
