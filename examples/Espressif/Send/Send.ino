@@ -11,10 +11,8 @@ CoreXTimer timer;       // Gunakan timer agar dapat mengeksekusi perintah setiap
 const char ssid[] = "..........";
 const char pass[] = "..........";
 
-
-
 void send() {
-  corex.send("hello", "world");     // send ke topik "authproject/data/hello" dengan pesan/payload "world".
+  corex.send("hello", "world");     // send ke topik "hello" dengan pesan "world".
 }
 
 void setup() {
@@ -28,9 +26,8 @@ void setup() {
 }
 
 void loop() {
-  corex.loop();
-  //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
   timer.run();                          // Jalankan timer.
+  //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
 
   // Periksa apakah perangkat masih terhubung.
   if (!corex.connected()) {

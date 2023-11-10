@@ -1,6 +1,7 @@
 #include <CoreX.h>
 #include "Connection.h"
 
+// Ubah nilai auth_token dan device anda.
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
@@ -17,7 +18,7 @@ void setup() {
   WiFi.begin(ssid, pass);
   corex.begin(net);
 
-  corex.onMessage(receive);       // Lakukan subscribe pada fungsi subscribe().
+  corex.onMessage(receive);       // Lakukan receive pada fungsi receive().
 
   setupCoreX();
 }
