@@ -139,6 +139,13 @@ static void CoreXHandler(lwmqtt_client_t * /*client*/, void *ref, lwmqtt_string_
 
   // create topic string
   String str_topic = String(terminated_topic);
+  int pos = str_topic.indexOf('/');
+
+  // check is "/" character has been found
+  if(pos != -1){
+    // remove character berfore "/"
+    str_topic = str_topic.substring(pos + 1);
+  }
 
   // create payload string
   String str_payload;
