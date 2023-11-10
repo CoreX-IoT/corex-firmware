@@ -11,7 +11,6 @@ CoreXTimer timer;       // Gunakan timer agar dapat mengeksekusi perintah setiap
 const char ssid[] = "..........";
 const char pass[] = "..........";
 
-const char server[] = "nusabotid.cloud.shiftr.io";
 
 
 void send() {
@@ -21,7 +20,7 @@ void send() {
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
-  corex.begin(server, net);
+  corex.begin(net);
 
   timer.setInterval(1000, send);     // Lakukan send setiap 1000 milidetik.
 

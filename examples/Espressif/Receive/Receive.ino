@@ -8,8 +8,6 @@ const char* DEVICE_ID = "..........";
 const char ssid[] = "......";
 const char pass[] = "......";
 
-const char server[] = "nusabotid.cloud.shiftr.io";
-
 void receive(String &topic, String &message) {
   Serial.println("data masuk: \n" + topic + " - " + message);
 }
@@ -17,7 +15,7 @@ void receive(String &topic, String &message) {
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
-  corex.begin(server, net);
+  corex.begin(net);
 
   corex.onMessage(receive);       // Lakukan subscribe pada fungsi subscribe().
 
