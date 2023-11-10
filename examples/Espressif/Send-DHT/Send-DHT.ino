@@ -2,11 +2,12 @@
 #include <DHT.h>
 #include "Connection.h"
 
-#define DHTPIN 12                       // GPIO 12 (D6) untuk pin DHT.
-// #define DHTTYPE DHT11                   // DHT 11
-#define DHTTYPE DHT22                 // DHT 22  (AM2302), AM2321
+#define DHTPIN 12                       // GPIO 12 untuk pin DHT.
+#define DHTTYPE DHT11                   // DHT 11
+//#define DHTTYPE DHT22                 // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21                 // DHT 21 (AM2301)
 
+// Ubah nilai auth_token dan device anda.
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
@@ -17,36 +18,34 @@ CoreXTimer timer;                   // Gunakan timer agar dapat mengeksekusi per
 const char ssid[] = "..........";
 const char pass[] = "..........";
 
-const char server[] = "nusabotid.cloud.shiftr.io";
-
 void send() {
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
+  float humid = dht.readHumidity();
+  float temp = dht.readTemperature();
 
   if (isnan(h) || isnan(t)) {
     Serial.println(F("Gagal membaca sensor DHT!"));
     return;
   }
 
-  corex.send("kelembaban", String(h).c_str());     // send data kelembaban ke topic "authProject/kelembaban".
-  corex.send("temperatur", String(t).c_str());     // Publish data temperatur ke topic "authProject/temperatur".
+  corex.send("kelembaban", humid);     // send data kelembaban ke topic "authProject/kelembaban".
+  corex.send("temperatur", temp);     // Publish data temperatur ke topic "authProject/temperatur".
 }
 
 void setup() {
-  dht.begin();
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
-  corex.begin(server, net);
+  corex.begin(net);
+  dht.begin();
 
-  timer.setInterval(3000, send);     // Lakukan publish setiap 1000 milidetik.
+  timer.setInterval(3000, send);     // Lakukan send setiap 3000 milidetik.
 
   setupCorex();
 }
 
 void loop() {
   corex.loop();
-  //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
   timer.run();                          // Jalankan timer.
+  //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
 
   // Periksa apakah perangkat masih terhubung.
   if (!corex.connected()) {
