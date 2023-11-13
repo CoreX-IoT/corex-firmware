@@ -187,7 +187,7 @@ CoreX::~CoreX() {
   free(this->writeBuf);
 }
 
-void CoreX::begin(Client &_client) {
+void CoreX::start(Client &_client) {
   // set client
   this->netClient = &_client;
 

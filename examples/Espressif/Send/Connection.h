@@ -9,7 +9,6 @@ void setupCorex() {
     delay(1000);
   }
 
-
   Serial.println("\nTerhubung ke WiFi!");
   Serial.print("Menghubungkan ke server/broker");
   while (!corex.connect()) {
@@ -18,5 +17,4 @@ void setupCorex() {
   }
 
   Serial.println("\nTerhubung ke server!");
-
 }
