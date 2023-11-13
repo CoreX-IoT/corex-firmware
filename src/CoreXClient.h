@@ -104,15 +104,6 @@ class CoreX {
 
   ~CoreX();
 
-
-  // cara ke 1
-  // void begin(Client &_client) { this->begin("nusabotid.cloud.shiftr.io", 1883, _client); }
-  // void begin(const char _hostname[], int _port, Client &_client) {
-  //   this->start(_client);
-  //   this->setHost(_hostname, _port);
-  // }
-
-  // cara ke 2 (lebih sederhana)
   void begin(Client &_client) { 
     this->start(_client);
     this->setHost("nusabotid.cloud.shiftr.io", 1883);
@@ -121,7 +112,7 @@ class CoreX {
 
   void begin(IPAddress _address, Client &_client) { this->begin(_address, 1883, _client); }
   void begin(IPAddress _address, int _port, Client &_client) {
-    this->begin(_client);
+    this->start(_client);
     this->setHost(_address, _port);
   }
 
