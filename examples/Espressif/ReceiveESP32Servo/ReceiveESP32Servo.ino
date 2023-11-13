@@ -2,17 +2,17 @@
 #include "Connection.h"
 #include <ESP32Servo.h>
 
+// Ubah nilai auth_token dan device Anda
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
-// Ubah nilai berikut sesuai jaringan Anda.
+// Ubah nilai berikut sesuai jaringan Anda
 const char ssid[] = "......";
 const char pass[] = "......";
 
 const int servoPin = 18;
 
 void receive(String &topic, String &message) {
-  Serial.println("data masuk: \n" + topic + " - " + message);
   if(topic == "servo"){
     servo.write(message.toInt());
   }
@@ -24,7 +24,7 @@ void setup() {
   WiFi.begin(ssid, pass);
   corex.begin(server, net);
 
-  corex.onMessage(receive);       // Lakukan subscribe pada fungsi subscribe().
+  corex.onMessage(receive);       // Lakukan receive pada fungsi receive().
 
   setupCoreX();
 }
