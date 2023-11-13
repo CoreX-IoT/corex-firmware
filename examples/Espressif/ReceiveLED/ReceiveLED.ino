@@ -12,7 +12,7 @@ const char pass[] = "......";
 void receive(String &topic, String &message) {
   Serial.println("data masuk: \n" + topic + " - " + message);
 
-    if(topic == String(AUTH_TOKEN) + "/led"){
+    if(topic == "led"){
     digitalWrite(BUILTIN_LED, message.toInt());
     
       if(message == "0"){
