@@ -1,26 +1,24 @@
 #include <CoreX.h>
 #include "Connection.h"
 
+// Ubah nilai auth_token dan device Anda
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
-// Ubah nilai berikut sesuai jaringan Anda.
+// Ubah nilai berikut sesuai jaringan Anda
 const char ssid[] = "......";
 const char pass[] = "......";
 
-
 void receive(String &topic, String &message) {
-  Serial.println("data masuk: \n" + topic + " - " + message);
-
-    if(topic == "led"){
+  if(topic == "led"){
     digitalWrite(BUILTIN_LED, message.toInt());
-    
-      if(message == "0"){
-        Serial.println("LED ON");
-      } else {
-        Serial.println("LED OFF");
-      }
+  
+    if(message == "0"){
+      Serial.println("LED ON");
+    } else {
+      Serial.println("LED OFF");
     }
+  }
 }
 
 void setup() {
@@ -29,7 +27,7 @@ void setup() {
   WiFi.begin(ssid, pass);
   corex.begin(net);
 
-  corex.onMessage(receive);       // Lakukan subscribe pada fungsi subscribe().
+  corex.onMessage(receive);       // Lakukan receive pada fungsi receive().
 
   setupCoreX();
 }

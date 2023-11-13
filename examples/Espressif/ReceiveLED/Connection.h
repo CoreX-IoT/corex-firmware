@@ -17,5 +17,4 @@ void setupCoreX() {
   }
 
   Serial.println("\nTerhubung ke server!");
-
 }
