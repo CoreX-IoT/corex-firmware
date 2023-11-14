@@ -9,18 +9,17 @@ const char* DEVICE_ID = "..........";
 const char ssid[] = "..........";
 const char pass[] = "..........";
 
-const int servoPin = 12;
-Servo servo;  //Deklarasi  servo global
+Servo myservo;
 
 void receive(String &topic, String &message) {
-  if (topic == "servo") {
-    servo.write(message.toInt());
+  if(topic == "servo"){
+    myservo.write(message.toInt());
   }
 }
 
 void setup() {
+  myservo.attach(12);                    //  Inisialisasi servo pada GPIO12 (D6)
   Serial.begin(115200);
-  servo.attach(servoPin, 500, 2400);
   WiFi.begin(ssid, pass);
   corex.begin(server, net);
 
