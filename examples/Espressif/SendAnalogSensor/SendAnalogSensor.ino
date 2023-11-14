@@ -22,13 +22,12 @@ void setup() {
   WiFi.begin(ssid, pass);
   corex.begin(net);
 
-  timer.setInterval(1000, send);     // Lakukan publish setiap 1000 milidetik.
+  timer.setInterval(1000, send);     // Lakukan send setiap 1000 milidetik.
 
   setupCorex();
 }
 
 void loop() {
-  corex.loop();
   timer.run();                          // Jalankan timer.
   //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
 

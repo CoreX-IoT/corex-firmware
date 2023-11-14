@@ -27,8 +27,8 @@ void send() {
     return;
   }
 
-  corex.send("kelembaban", humid);     // send data kelembaban ke topic "authProject/kelembaban".
-  corex.send("temperatur", temp);     // Publish data temperatur ke topic "authProject/temperatur".
+  corex.send("kelembaban", humid);     // send data kelembaban ke topic "kelembaban".
+  corex.send("temperatur", temp);     // send data temperatur ke topic "temperatur".
 }
 
 void setup() {
@@ -43,7 +43,6 @@ void setup() {
 }
 
 void loop() {
-  corex.loop();
   timer.run();                          // Jalankan timer.
   //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
 
