@@ -1,78 +1,80 @@
-# Dashboard untuk Arduino IDE
+# CoreX IoT Platform
 
-Pustaka ini digunakan Arduino IDE untuk menghubungkan perangkat ke platform Dashboard menggunakan protokol MQTT berdasarkan [arduino-mqtt](https://github.com/256dpi/arduino-mqtt/)
+Pustaka ini digunakan untuk menghubungkan perangkat ke platform CoreX menggunakan protokol MQTT berdasarkan [arduino-mqtt](https://github.com/256dpi/arduino-mqtt/)
 
 Pustaka ini mengimplementasikan "**L**ight **W**eight **MQTT**" [lwmqtt](https://github.com/256dpi/lwmqtt) MQTT 3.1.1 dimana pustaka ini dioptimalkan untuk digunakan pada perangkat tertanam (embedded device).
 
-Unduh versi terbaru dari [rilis](https://github.com/nusabot-iot/dashboard-arduino/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **Dashboard IoT**.
+Unduh versi terbaru dari [rilis](https://github.com/nusabot-iot/dashboard-arduino/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **CoreX IoT**.
 
 ## Contoh
 
-Pustaka menyertakan contoh kode program. Lihat Berkas -> Contoh -> Dashboard (File -> Example -> Dashboard) pada Arduino IDE.
+Pustaka menyertakan contoh kode program. Lihat Berkas -> Contoh -> CoreX (File -> Example -> CoreX) pada Arduino IDE.
 
-Contoh berikut menggunakan ESP32 Development Board dan terhubung dengan broker EMQX:
+Contoh berikut menggunakan ESP32/ESP8266 Development Board:
 ```c++
-#include <WiFi.h>
-#include <Dashboard.h>
-#include "Connection.h"
+#include <CoreX.h>
+
+// Ubah nilai auth_token dan device anda.
+const char* AUTH_TOKEN = "..........";
+const char* DEVICE_ID = "..........";
 
 WiFiClient net;
-Dashboard dashboard;
-DashboardTimer timer;                   // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
+CoreX corex;
+CoreXTimer timer;                   // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
 
 // Ubah nilai berikut sesuai jaringan Anda.
-const char ssid[] = "ssid";
-const char pass[] = "pass";
-const char server[] = "broker.emqx.io";
-const String authProject = "YOUR_DASHBOARD_AUTH_PROJECT";
-// Atur Client ID dengan nomor acak. Anda bisa menggantinya dengan Client ID apapun.
-// String CleintId = "YourClientId";
-const String clientId = "Nusabot-" + String(random(0xffff), HEX);
+const char ssid[] = "..........";
+const char pass[] = "..........";
 
-void setupDashboard() {
+
+void setupCoreX() {
+  Serial.println("CoreX IoT by Nusabot");
   Serial.println("Menghubungkan ke WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(1000);
   }
 
-  Serial.print("\nMenghubungkan ke server/broker");
-  while (!dashboard.connect(clientId.c_str())) {
+  Serial.println("\nTerhubung ke WiFi!");
+  Serial.print("Menghubungkan ke server/broker");
+  while (!corex.connect()) {
     Serial.print(".");
     delay(1000);
   }
-  Serial.println("\nTerhubung ke server!");
 
-  dashboard.subscribe(authProject+"/data/#");
+  Serial.println("\nTerhubung ke server!");
 }
 
-void subscribe(String &topic, String &message) {
+void receive(String &topic, String &message) {
   Serial.println("data masuk: \n" + topic + " - " + message);
 }
 
-void publish() {
-  dashboard.publish(authProject, "data/hello", "world");     // Publish ke topik "authproject/data/hello" dengan pesan "world".
+void send() {
+  corex.send("hello", "world");     // send ke topik "hello" dengan pesan "world".
 }
 
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
-  dashboard.begin(server, net);
+  corex.begin(net);
 
-  dashboard.onMessage(subscribe);       // Lakukan subscribe pada fungsi subscribe().
-  timer.setInterval(1000, publish);     // Lakukan publish setiap 1000 milidetik.
+  corex.onMessage(receive);       // Lakukan receive pada fungsi receive().
+  timer.setInterval(1000, send);     // Lakukan send setiap 1000 milidetik.
 
-  setupDashboard();
+  setupCoreX();
 }
 
 void loop() {
-  dashboard.loop();
+  corex.loop();
   timer.run();                          // Jalankan timer.
+  //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
 
   // Periksa apakah perangkat masih terhubung.
-  if (!dashboard.connected()) {
-    setupDashboard();
+  if (!corex.connected()) {
+    setupCoreX();
   }
+
+  //==LETAKAN KODE PROGRAM DISINI UNTUK DILAKUKAN PROSES==//
 }
 ```
 
