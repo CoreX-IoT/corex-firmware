@@ -1,77 +1,60 @@
-# Dashboard untuk Arduino IDE
+# CoreX C++ Library
 
-Pustaka ini digunakan Arduino IDE untuk menghubungkan perangkat ke platform Dashboard menggunakan protokol MQTT berdasarkan [arduino-mqtt](https://github.com/256dpi/arduino-mqtt/)
+CoreX adalah platform IoT yang memungkinkan kamu mengirim dan menerima data antar perangkat. Kamu dapat membuat desain web kamu sendiri menggunakan berbagai widget untuk menampilkan data dari sensor ataupun mengendalikan aktuator.
 
-Pustaka ini mengimplementasikan "**L**ight **W**eight **MQTT**" [lwmqtt](https://github.com/256dpi/lwmqtt) MQTT 3.1.1 dimana pustaka ini dioptimalkan untuk digunakan pada perangkat tertanam (embedded device).
+- Dengan CoreX kamu bisa menghubungkan berbagai macam model perangkat IoT (termasuk ESp8266, ESp32, NodeMCU, semua board Arduino, Raspberry Pi, dll).
+- Dengan CoreX kamu bisa membuat aplikasi web sendiri tanpa pemrograman sama sekali untuk menampilkan data seperti sensor dan mengendalikan aktuator.
+- Dengan CoreX kamu bisa mengintegrasikan proyek yang sudah ada melalui HTTP API dan protokol MQTT.
 
-Unduh versi terbaru dari [rilis](https://github.com/nusabot-iot/dashboard-arduino/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **Dashboard IoT**.
+Unduh versi terbaru dari [rilis](https://github.com/nusabotid/corex-firmware/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **CoreX IoT**.
 
 ## Contoh
 
-Pustaka menyertakan contoh kode program. Lihat Berkas -> Contoh -> Dashboard (File -> Example -> Dashboard) pada Arduino IDE.
+Pustaka menyertakan contoh kode program. Lihat Berkas -> Contoh -> CoreX (File -> Example -> CoreX) pada Arduino IDE.
 
-Contoh berikut menggunakan ESP32 Development Board dan terhubung dengan broker EMQX:
+Contoh berikut menggunakan ESP32/ESP8266 Development Board:
 ```c++
-#include <WiFi.h>
-#include <Dashboard.h>
-#include "Connection.h"
+#include <CoreX.h>
+
+// Ubah nilai auth_token dan device Anda.
+const char* AUTH_TOKEN = "..........";
+const char* DEVICE_ID = "..........";
 
 WiFiClient net;
-Dashboard dashboard;
-DashboardTimer timer;                   // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
+CoreX corex;
+CoreXTimer timer;                   // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
 
 // Ubah nilai berikut sesuai jaringan Anda.
-const char ssid[] = "ssid";
-const char pass[] = "pass";
-const char server[] = "broker.emqx.io";
-const String authProject = "YOUR_DASHBOARD_AUTH_PROJECT";
-// Atur Client ID dengan nomor acak. Anda bisa menggantinya dengan Client ID apapun.
-// String CleintId = "YourClientId";
-const String clientId = "Nusabot-" + String(random(0xffff), HEX);
+const char ssid[] = "..........";
+const char pass[] = "..........";
 
-void setupDashboard() {
-  Serial.println("Menghubungkan ke WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(1000);
-  }
-
-  Serial.print("\nMenghubungkan ke server/broker");
-  while (!dashboard.connect(clientId.c_str())) {
-    Serial.print(".");
-    delay(1000);
-  }
-  Serial.println("\nTerhubung ke server!");
-
-  dashboard.subscribe(authProject+"/data/#");
-}
-
-void subscribe(String &topic, String &message) {
+void receive(String &topic, String &message) {    // Terima data
   Serial.println("data masuk: \n" + topic + " - " + message);
 }
 
-void publish() {
-  dashboard.publish(authProject, "data/hello", "world");     // Publish ke topik "authproject/data/hello" dengan pesan "world".
+void send() {
+  corex.send("hello", "world");     // Kirim data ke topik "hello" dengan pesan "world".
 }
 
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, pass);
-  dashboard.begin(server, net);
+  corex.begin(net);
 
-  dashboard.onMessage(subscribe);       // Lakukan subscribe pada fungsi subscribe().
-  timer.setInterval(1000, publish);     // Lakukan publish setiap 1000 milidetik.
+  corex.onMessage(receive);       // Lakukan receive pada fungsi receive().
+  timer.setInterval(1000, send);     // Lakukan send setiap 1000 milidetik.
 
-  setupDashboard();
+  setupCoreX();
 }
 
 void loop() {
-  dashboard.loop();
+  corex.loop();
   timer.run();                          // Jalankan timer.
+  //delay(10);                          // Hapus komentar untuk memberikan delay 10 milidetik jika terjadi kendala pada stabilitas WiFi.
 
   // Periksa apakah perangkat masih terhubung.
-  if (!dashboard.connected()) {
-    setupDashboard();
+  if (!corex.connected()) {
+    setupCoreX();
   }
 }
 ```
