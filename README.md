@@ -1,10 +1,12 @@
-# CoreX IoT Platform
+# CoreX C++ Library
 
-Pustaka ini digunakan untuk menghubungkan perangkat ke platform CoreX menggunakan protokol MQTT berdasarkan [arduino-mqtt](https://github.com/256dpi/arduino-mqtt/)
+CoreX adalah platform IoT yang memungkinkan kamu mengirim dan menerima data antar perangkat. Kamu dapat membuat desain web kamu sendiri menggunakan berbagai widget untuk menampilkan data dari sensor ataupun mengendalikan aktuator.
 
-Pustaka ini mengimplementasikan "**L**ight **W**eight **MQTT**" [lwmqtt](https://github.com/256dpi/lwmqtt) MQTT 3.1.1 dimana pustaka ini dioptimalkan untuk digunakan pada perangkat tertanam (embedded device).
+- Dengan CoreX kamu bisa menghubungkan berbagai macam model perangkat IoT (termasuk ESp8266, ESp32, NodeMCU, semua board Arduino, Raspberry Pi, dll).
+- Dengan CoreX kamu bisa membuat aplikasi web sendiri tanpa pemrograman sama sekali untuk menampilkan data seperti sensor dan mengendalikan aktuator.
+- Dengan CoreX kamu bisa mengintegrasikan proyek yang sudah ada melalui HTTP API dan protokol MQTT.
 
-Unduh versi terbaru dari [rilis](https://github.com/nusabot-iot/dashboard-arduino/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **CoreX IoT**.
+Unduh versi terbaru dari [rilis](https://github.com/nusabotid/corex-firmware/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **CoreX IoT**.
 
 ## Contoh
 
@@ -14,7 +16,7 @@ Contoh berikut menggunakan ESP32/ESP8266 Development Board:
 ```c++
 #include <CoreX.h>
 
-// Ubah nilai auth_token dan device anda.
+// Ubah nilai auth_token dan device Anda.
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
@@ -26,31 +28,12 @@ CoreXTimer timer;                   // Gunakan timer agar dapat mengeksekusi per
 const char ssid[] = "..........";
 const char pass[] = "..........";
 
-
-void setupCoreX() {
-  Serial.println("CoreX IoT by Nusabot");
-  Serial.println("Menghubungkan ke WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(1000);
-  }
-
-  Serial.println("\nTerhubung ke WiFi!");
-  Serial.print("Menghubungkan ke server/broker");
-  while (!corex.connect()) {
-    Serial.print(".");
-    delay(1000);
-  }
-
-  Serial.println("\nTerhubung ke server!");
-}
-
-void receive(String &topic, String &message) {
+void receive(String &topic, String &message) {    // Terima data
   Serial.println("data masuk: \n" + topic + " - " + message);
 }
 
 void send() {
-  corex.send("hello", "world");     // send ke topik "hello" dengan pesan "world".
+  corex.send("hello", "world");     // Kirim data ke topik "hello" dengan pesan "world".
 }
 
 void setup() {
@@ -73,8 +56,6 @@ void loop() {
   if (!corex.connected()) {
     setupCoreX();
   }
-
-  //==LETAKAN KODE PROGRAM DISINI UNTUK DILAKUKAN PROSES==//
 }
 ```
 
