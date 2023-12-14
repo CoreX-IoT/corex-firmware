@@ -28,12 +28,12 @@ CoreXTimer timer;                   // Gunakan timer agar dapat mengeksekusi per
 const char ssid[] = "..........";
 const char pass[] = "..........";
 
-void receive(String &topic, String &message) {    // Terima data
-  Serial.println("data masuk: \n" + topic + " - " + message);
+void receive(String &bucket, String &data) {    // Terima data
+  Serial.println("data masuk: \n" + bucket + " - " + data);
 }
 
 void send() {
-  corex.send("hello", "world");     // Kirim data ke topik "hello" dengan pesan "world".
+  corex.send("hello", "world");     // Kirim data "world" ke bucket "hello"
 }
 
 void setup() {
