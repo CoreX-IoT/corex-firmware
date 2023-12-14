@@ -9,8 +9,8 @@ const char* DEVICE_ID = "..........";
 const char ssid[] = "......";
 const char pass[] = "......";
 
-void receive(String &topic, String &message) {
-  Serial.println("data masuk: \n" + topic + " - " + message);
+void receive(String &bucket, String &data) {
+  Serial.println("data masuk: \n" + bucket + " - " + data);
 }
 
 void setup() {
