@@ -12,7 +12,7 @@ const char ssid[] = "..........";
 const char pass[] = "..........";
 
 void send() {
-  corex.send("hello", "world");     // send ke topik "hello" dengan pesan "world".
+  corex.send("hello", "world");     // send ke bucket "hello" dengan data "world".
 }
 
 void setup() {
@@ -33,6 +33,4 @@ void loop() {
   if (!corex.connected()) {
     setupCorex();
   }
-
-  //==LETAKAN KODE PROGRAM DISINI UNTUK DILAKUKAN PROSES==//
 }

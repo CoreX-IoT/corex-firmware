@@ -35,6 +35,4 @@ void loop() {
   if (!corex.connected()) {
     setupCorex();
   }
-
-  //==LETAKAN KODE PROGRAM DISINI UNTUK DILAKUKAN PROSES==//
 }

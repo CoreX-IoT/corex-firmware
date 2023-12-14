@@ -9,11 +9,11 @@ const char* DEVICE_ID = "..........";
 const char ssid[] = "......";
 const char pass[] = "......";
 
-void receive(String &topic, String &message) {
-  if(topic == "led"){
-    digitalWrite(BUILTIN_LED, message.toInt());
+void receive(String &bucket, String &data) {
+  if(bucket == "led"){
+    digitalWrite(BUILTIN_LED, data.toInt());
   
-    if(message == "0"){
+    if(data == "0"){
       Serial.println("LED ON");
     } else {
       Serial.println("LED OFF");

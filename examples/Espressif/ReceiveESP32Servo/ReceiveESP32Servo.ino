@@ -12,9 +12,9 @@ const char pass[] = "......";
 
 const int servoPin = 18;
 
-void receive(String &topic, String &message) {
-  if(topic == "servo"){
-    servo.write(message.toInt());
+void receive(String &bucket, String &data) {
+  if(bucket == "servo"){
+    servo.write(data.toInt());
   }
 }
 
