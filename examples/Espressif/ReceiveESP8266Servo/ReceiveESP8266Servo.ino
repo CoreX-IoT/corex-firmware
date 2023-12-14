@@ -11,7 +11,7 @@ const char pass[] = "..........";
 
 Servo myservo;
 
-void receive(String &topic, String &message) {
+void receive(String &bucket, String &data) {
   if(topic == "servo"){
     myservo.write(message.toInt());
   }
