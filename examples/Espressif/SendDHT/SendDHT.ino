@@ -23,12 +23,12 @@ void send() {
   float temp = dht.readTemperature();
 
   if (isnan(h) || isnan(t)) {
-    Serial.println(F("Gagal membaca sensor DHT!"));
+    Serial.println(F("Gagal membaca sensor DHT. Periksa Pengkabelan!"));
     return;
   }
 
-  corex.send("kelembaban", humid);     // send data kelembaban ke topic "kelembaban".
-  corex.send("temperatur", temp);     // send data temperatur ke topic "temperatur".
+  corex.send("kelembaban", humid);     // send data kelembaban ke bucket "kelembaban".
+  corex.send("temperatur", temp);     // send data temperatur ke bucket "temperatur".
 }
 
 void setup() {
