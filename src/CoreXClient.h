@@ -149,7 +149,7 @@ class CoreX {
 
   bool connect(bool skip = false) { 
     setWill((String(AUTH_TOKEN)+"/disconnect/"+String(DEVICE_ID)).c_str(), "true");  
-    connect(DEVICE_ID, "/nusabot:nusabot", "qwerty123", skip);
+    connect(DEVICE_ID, "/corex:corex", "qwerty123", skip);
     if(connected()){
       publish((String(AUTH_TOKEN)+"/disconnect/"+String(DEVICE_ID)).c_str(), "false", strlen("false"), true, 1);
     }
