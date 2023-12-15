@@ -6,7 +6,7 @@ CoreX adalah platform IoT yang memungkinkan kamu mengirim dan menerima data anta
 - Dengan CoreX kamu bisa membuat aplikasi web sendiri tanpa pemrograman sama sekali untuk menampilkan data seperti sensor dan mengendalikan aktuator.
 - Dengan CoreX kamu bisa mengintegrasikan proyek yang sudah ada melalui HTTP API dan protokol MQTT.
 
-Unduh versi terbaru dari [rilis](https://github.com/nusabotid/corex-firmware/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **CoreX IoT**.
+Unduh versi terbaru dari [rilis](https://github.com/CoreX-IoT/corex-firmware/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **CoreX IoT**.
 
 ## Contoh
 
@@ -72,6 +72,7 @@ Pustaka menggunakan API Arduino Ethernet Client untuk berinteraksi dengan perang
  - Arduino/Genuino WiFi101 Shield
  - Arduino MKR GSM 1400
  - Intel Galileo/Edison
+ - Seluruh perangkat yang mendukung API Arduino Ethernet Client
 
 ## Lisensi
 
