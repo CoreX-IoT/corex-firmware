@@ -2,9 +2,9 @@
 
 CoreX adalah platform IoT yang memungkinkan kamu mengirim dan menerima data antar perangkat. Kamu dapat membuat desain web kamu sendiri menggunakan berbagai widget untuk menampilkan data dari sensor ataupun mengendalikan aktuator.
 
-- Dengan CoreX kamu bisa menghubungkan berbagai macam model perangkat IoT (termasuk ESp8266, ESp32, NodeMCU, semua board Arduino, Raspberry Pi, dll).
+- Dengan CoreX kamu bisa menghubungkan berbagai macam model perangkat IoT (termasuk ESP8266, ESP32, NodeMCU, semua board Arduino, Raspberry Pi, dll).
 - Dengan CoreX kamu bisa membuat aplikasi web sendiri tanpa pemrograman sama sekali untuk menampilkan data seperti sensor dan mengendalikan aktuator.
-- Dengan CoreX kamu bisa mengintegrasikan proyek yang sudah ada melalui HTTP API dan protokol MQTT.
+- Dengan CoreX kamu bisa mengintegrasikan proyek yang sudah ada melalui API yang sudah disediakan.
 
 Unduh versi terbaru dari [rilis](https://github.com/CoreX-IoT/corex-firmware/releases) atau juga lebih baik jika unduh dan install melalui Library Manager pada Arduino IDE. Cari dengan nama **CoreX IoT**.
 

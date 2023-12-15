@@ -1,11 +1,11 @@
 {
     "name": "CoreX",
     "keywords": "iot, sensors, control, device, app, web, cloud, communication, protocol, iot, m2m, wifi, ethernet, gsm, gprs, 3g, data, esp8266, esp32",
-    "description": "Library for CoreX IoT Platform by Nusabot.",
+    "description": "Library for CoreX IoT Platform.",
     "authors": [
         {
-            "name": "Nusabot",
-            "url": "https://nusabot.id",
+            "name": "CoreX",
+            "url": "https://corex.id",
             "maintainer": true
         },
         {
@@ -19,9 +19,9 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/nusabotid/corex-firmware"
+        "url": "https://github.com/CoreX-IoT/corex-firmware"
     },
-    "version": "1.0.0",
+    "version": "1.2.0",
     "exclude": "tests",
     "examples": "examples/*/*.ino",
     "homepage": "https://corex.id",
