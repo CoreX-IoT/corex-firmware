@@ -106,7 +106,7 @@ class CoreX {
 
   void begin(Client &_client) { 
     this->start(_client);
-    this->setHost("rmq.corex.id", 1883);
+    this->setHost("public.cloud.shiftr.io", 1883);
   }
   void start(Client &_client);
 
@@ -149,7 +149,7 @@ class CoreX {
 
   bool connect(bool skip = false) { 
     setWill((String(AUTH_TOKEN)+"/disconnect/"+String(DEVICE_ID)).c_str(), "true");  
-    connect(DEVICE_ID, "/corex:corex", "qwerty123", skip);
+    connect(DEVICE_ID, "public", "public");
     if(connected()){
       publish((String(AUTH_TOKEN)+"/disconnect/"+String(DEVICE_ID)).c_str(), "false", strlen("false"), true, 1);
     }
