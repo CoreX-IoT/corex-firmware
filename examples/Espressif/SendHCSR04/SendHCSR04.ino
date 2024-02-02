@@ -5,14 +5,21 @@
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
-CoreXTimer timer;       // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
+CoreXTimer timer;     // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
 
 // Ubah nilai berikut sesuai jaringan Anda.
 const char ssid[] = "..........";
 const char pass[] = "..........";
 
+float cm;
+float inches;
+
 void send() {
-  corex.send("hello", "world");     // send ke bucket "hello" dengan data "world".
+  cm = 0.0344/2 * readDistance(3, 2); // Ubah nomor pin sesuai dengan nomor pin echo dan trig
+	inches = (cm / 2.54);
+
+  corex.send("distance-cm", cm);
+  corex.send("distance-inch", inches);
 }
 
 void setup() {
@@ -33,4 +40,17 @@ void loop() {
   if (!corex.connected()) {
     setupCorex();
   }
+}
+
+long readDistance(int triggerPin, int echoPin) {
+	pinMode(triggerPin, OUTPUT);  // Hapus trigger
+	digitalWrite(triggerPin, LOW);
+	delayMicroseconds(2);
+	// Atur pin trigger ke HIGH selama 10 microsecond
+	digitalWrite(triggerPin, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(triggerPin, LOW);
+	pinMode(echoPin, INPUT);
+	// Baca pin echo dan mengembalikan gelombang suara yang merambat dalam satuan microsecond
+	return pulseIn(echoPin, HIGH);
 }

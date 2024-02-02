@@ -7,7 +7,7 @@
 //#define DHTTYPE DHT22                 // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21                 // DHT 21 (AM2301)
 
-// Ubah nilai auth_token dan device anda.
+// Ubah nilai auth_token dan device Anda.
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
