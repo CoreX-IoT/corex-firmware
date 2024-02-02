@@ -5,7 +5,6 @@
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
-#define SENSOR_PIN A0
 CoreXTimer timer;     // Gunakan timer agar dapat mengeksekusi perintah setiap sekian milidetik tanpa blocking.
 
 // Ubah nilai berikut sesuai jaringan Anda.
@@ -47,7 +46,7 @@ long readDistance(int triggerPin, int echoPin) {
 	pinMode(triggerPin, OUTPUT);  // Hapus trigger
 	digitalWrite(triggerPin, LOW);
 	delayMicroseconds(2);
-	// Atur pin trgger ke HIGH selama 10 microsecond
+	// Atur pin trigger ke HIGH selama 10 microsecond
 	digitalWrite(triggerPin, HIGH);
 	delayMicroseconds(10);
 	digitalWrite(triggerPin, LOW);
