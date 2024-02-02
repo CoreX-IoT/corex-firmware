@@ -1,7 +1,7 @@
 #include <CoreX.h>
 #include "Connection.h"
 
-// Ubah nilai auth_token dan device anda.
+// Ubah nilai auth_token dan device Anda.
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 

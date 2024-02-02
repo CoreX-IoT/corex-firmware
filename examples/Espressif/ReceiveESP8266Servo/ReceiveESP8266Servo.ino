@@ -2,6 +2,7 @@
 #include "Connection.h"
 #include <Servo.h>
 
+// Ubah nilai auth_token dan device Anda
 const char* AUTH_TOKEN = "..........";
 const char* DEVICE_ID = "..........";
 
